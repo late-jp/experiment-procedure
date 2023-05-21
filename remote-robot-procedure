@@ -1,0 +1,236 @@
+import socket
+import time
+import random
+import os.path
+
+# priming and initiating the robot-connection
+HOST = " "  # The remote host
+PORT = 30002  # The same port as used by the server
+DASHBOARD_PORT = 29999
+time.sleep(1)
+
+# path for created files
+save_path = ' '
+
+# original list of all conditions
+velocities = list(['a1', 'a1', 'a1', 'a3', 'a3', 'a3', 'a10', 'a10', 'a10', 'a30', 'a30', 'a30', 'a100', 'a100', 'a100',
+                   'a300', 'a300', 'a300', 'b1', 'b1', 'b1', 'b3', 'b3', 'b3', 'b10', 'b10', 'b10', 'b30', 'b30', 'b30',
+                   'b100', 'b100', 'b100', 'b300', 'b300', 'b300'])
+
+# wait times for robot catch-up
+time_1 = 100
+time_10 = 10
+time_100 = 1
+time_3 = 34
+time_30 = 4
+time_300 = 1
+
+new = input("Do you want to:\n(1) Start new experiment\n(2) Continue prior experiment\n")
+i = 0
+
+if new == '1':
+    # priming, defining and randomizing the experiment
+    list_experiment = velocities.copy()  # creating a copy of the original list
+    random.shuffle(list_experiment)  # randomizing the order of the experiment-specific list
+    part_ID = input("Input participant ID in format (01-99):\n")  # creating a file for the experiment
+    complete_name = os.path.join(save_path, "experiment_conditions"+part_ID+".txt")
+    file = open(complete_name, "w")
+    while i < len(velocities):
+        file.write(str(list_experiment[i]))  # writing all elements of the list in the file, on separate rows
+        file.write("\n")
+        i += 1
+    file.close()
+    i = 0
+    print("Experiment saved as {}.\n".format(complete_name))
+elif new == '2':
+    part_ID = input("Input participant ID for the prior experiment:\n")
+    complete_name = os.path.join(save_path, "experiment_conditions"+part_ID+".txt")
+    read_file = open(complete_name, "r")
+    data = read_file.read()
+    list_experiment = data.split("\n")
+    del list_experiment[36]
+    read_file.close()
+    i = int(input("Input last successful command from the prior experiment.\n")) + 1
+    print("Resuming experiment from file: {}".format(complete_name))
+    print("Resuming from trial number {}".format(i))
+else:
+    raise TypeError("Invalid input")
+
+print("Establishing connection")
+time.sleep(1)
+print(">")
+time.sleep(1)
+print(">")
+time.sleep(1)
+print(">\n")
+
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # establishing connection
+s.connect((HOST, PORT))
+time.sleep(0.5)
+drive = False
+
+# conducting the experiment, according to the randomized order
+while i < len(velocities):
+    drive = input(
+        "When you are ready for the next stimulus, enter 'y'. If local adjustments are needed, or to stop "
+        "program, enter 'a'.\n")
+    if drive == 'a':
+        print("Exiting program.\nLast successful command had the index: {}".format(i - 1))
+        exit()
+    else:
+        print("Calling for next stimulus.")
+    time_pause = 5 + random.randint(1, 10)
+    time.sleep(time_pause)
+    if list_experiment[i] == 'a1':  # recognizing list-element and calling the corresponding program
+        print("Calling a program with command index {}".format(i))  # confirmation that a program is called
+        time.sleep(0.5)
+        f = open(r" FILE LOCATION  ", "rb")
+        script = f.read(1024)
+        while script:
+            s.send(script)  # sending each line of the script to the robot
+            script = f.read(1024)
+        time.sleep(time_1 + 15)  # robot-program catch-up
+        drive = False
+        i += 1  # moving to the next element
+        f.close()
+    elif list_experiment[i] == 'a10':  # recognizing list-element and calling the corresponding program
+        print("Calling a program with command index {}".format(i))  # a program is called
+        time.sleep(0.5)
+        f = open(r" FILE LOCATION  ", "rb")
+        script = f.read(1024)
+        while script:
+            s.send(script)  # sending each line of the script to the robot
+            script = f.read(1024)
+        time.sleep(time_10 + 12)  # robot-program catch-up
+        drive = False
+        i += 1  # moving to the next element
+        f.close()
+    elif list_experiment[i] == 'a100':  # recognizing list-element and calling the corresponding program
+        print("Calling a program with command index {}".format(i))  # a program is called
+        time.sleep(0.5)
+        f = open(r" FILE LOCATION  ", "rb")
+        script = f.read(1024)
+        while script:
+            s.send(script)  # sending each line of the script to the robot
+            script = f.read(1024)
+        time.sleep(time_100 + 12)  # robot-program catch-up
+        drive = False
+        i += 1  # moving to the next element
+        f.close()
+    elif list_experiment[i] == 'a3':  # recognizing list-element and calling the corresponding program
+        print("Calling a program with command index {}".format(i))  # a program is called
+        time.sleep(0.5)
+        f = open(r" FILE LOCATION  ", "rb")
+        script = f.read(1024)
+        while script:
+            s.send(script)  # sending each line of the script to the robot
+            script = f.read(1024)
+        time.sleep(time_3 + 12)  # robot-program catch-up
+        drive = False
+        i += 1  # moving to the next element
+        f.close()
+    elif list_experiment[i] == 'a30':  # recognizing list-element and calling the corresponding program
+        print("Calling a program with command index {}".format(i))  # a program is called
+        time.sleep(0.5)
+        f = open(r" FILE LOCATION  ", "rb")
+        script = f.read(1024)
+        while script:
+            s.send(script)  # sending each line of the script to the robot
+            script = f.read(1024)
+        time.sleep(time_30 + 12)  # robot-program catch-up
+        drive = False
+        i += 1  # moving to the next element
+        f.close()
+    elif list_experiment[i] == 'a300':  # recognizing list-element and calling the corresponding program
+        print("Calling a program with command index {}".format(i))  # a program is called
+        time.sleep(0.5)
+        f = open(r" FILE LOCATION  ", "rb")
+        script = f.read(1024)
+        while script:
+            s.send(script)  # sending each line of the script to the robot
+            script = f.read(1024)
+        time.sleep(time_300 + 12)  # robot-program catch-up
+        drive = False
+        i += 1  # moving to the next element
+        f.close()
+    elif list_experiment[i] == 'b1':  # recognizing list-element and calling the corresponding program
+        print("Calling a program with command index {}".format(i))  # a program is called
+        time.sleep(0.5)
+        f = open(r" FILE LOCATION  ", "rb")
+        script = f.read(1024)
+        while script:
+            s.send(script)  # sending each line of the script to the robot
+            script = f.read(1024)
+        time.sleep(time_1 + 15)  # robot-program catch-up
+        drive = False
+        i += 1  # moving to the next element
+        f.close()
+    elif list_experiment[i] == 'b10':  # recognizing list-element and calling the corresponding program
+        print("Calling a program with command index {}".format(i))  # a program is called
+        time.sleep(0.5)
+        f = open(r" FILE LOCATION  ", "rb")
+        script = f.read(1024)
+        while script:
+            s.send(script)  # sending each line of the script to the robot
+            script = f.read(1024)
+        time.sleep(time_10 + 12)  # robot-program catch-up
+        drive = False
+        i += 1  # moving to the next element
+        f.close()
+    elif list_experiment[i] == 'b100':  # recognizing list-element and calling the corresponding program
+        print("Calling a program with command index {}".format(i))  # a program is called
+        time.sleep(0.5)
+        f = open(r" FILE LOCATION  ", "rb")
+        script = f.read(1024)
+        while script:
+            s.send(script)  # sending each line of the script to the robot
+            script = f.read(1024)
+        time.sleep(time_100 + 12)  # robot-program catch-up
+        drive = False
+        i += 1  # moving to the next element
+        f.close()
+    elif list_experiment[i] == 'b3':  # recognizing list-element and calling the corresponding program
+        print("Calling a program with command index {}".format(i))  # a program is called
+        time.sleep(0.5)
+        f = open(r" FILE LOCATION  ", "rb")
+        script = f.read(1024)
+        while script:
+            s.send(script)  # sending each line of the script to the robot
+            script = f.read(1024)
+        time.sleep(time_3 + 12)  # robot-program catch-up
+        drive = False
+        i += 1  # moving to the next element
+        f.close()
+    elif list_experiment[i] == 'b30':  # recognizing list-element and calling the corresponding program
+        print("Calling a program with command index {}".format(i))  # a program is called
+        time.sleep(0.5)
+        f = open(r" FILE LOCATION  ", "rb")
+        script = f.read(1024)
+        while script:
+            s.send(script)  # sending each line of the script to the robot
+            script = f.read(1024)
+        time.sleep(time_30 + 12)  # robot-program catch-up
+        drive = False
+        i += 1  # moving to the next element
+        f.close()
+    elif list_experiment[i] == 'b300':  # recognizing list-element and calling the corresponding program
+        print("Calling a program with command index {}".format(i))  # a program is called
+        time.sleep(0.5)
+        f = open(r" FILE LOCATION  ", "rb")
+        script = f.read(1024)
+        while script:
+            s.send(script)  # sending each line of the script to the robot
+            script = f.read(1024)
+        time.sleep(time_300 + 12)  # robot-program catch-up
+        drive = False
+        i += 1  # moving to the next element
+        f.close()
+    else:
+        print("Not calling a program, index: {}".format(i))  # placeholder
+        time.sleep(1)
+        drive = False
+        i += 1
+s.close()  # closing and stopping the program
+
+print("Experiment finished")
