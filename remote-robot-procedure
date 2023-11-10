@@ -5,8 +5,8 @@ import os.path
 
 # priming and initiating the robot-connection
 HOST = " "  # The remote host
-PORT = 30002  # The same port as used by the server
-DASHBOARD_PORT = 29999
+PORT = " "  # The same port as used by the server
+DASHBOARD_PORT =
 time.sleep(1)
 
 # path for created files
